@@ -17,13 +17,13 @@ export function useCanvas() {
   const lastPos = useRef({ x: 0, y: 0 })
 
   const onWheelZoom = useCallback((e: React.WheelEvent) => {
-    e.preventDefault()
     const delta = e.deltaY > 0 ? 0.9 : 1.1
+    const target = e.currentTarget as HTMLElement
+    const rect = target.getBoundingClientRect()
+    const mouseX = e.clientX - rect.left
+    const mouseY = e.clientY - rect.top
     setTransform(prev => {
       const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, prev.scale * delta))
-      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-      const mouseX = e.clientX - rect.left
-      const mouseY = e.clientY - rect.top
       // zoom toward mouse position
       const newX = mouseX - (mouseX - prev.x) * (newScale / prev.scale)
       const newY = mouseY - (mouseY - prev.y) * (newScale / prev.scale)
